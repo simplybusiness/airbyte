@@ -7,11 +7,11 @@ select
   {{ quote('DATE') }} as {{ quote('_AIRBYTE_START_AT') }},
   lag({{ quote('DATE') }}) over (
     partition by id
-    order by {{ quote('DATE') }} asc nulls first, {{ quote('DATE') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
+    order by {{ quote('DATE') }} asc nulls last, {{ quote('DATE') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
   ) as {{ quote('_AIRBYTE_END_AT') }},
   case when lag({{ quote('DATE') }}) over (
     partition by id
-    order by {{ quote('DATE') }} asc nulls first, {{ quote('DATE') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
+    order by {{ quote('DATE') }} asc nulls last, {{ quote('DATE') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
   ) is null  then 1 else 0 end as {{ quote('_AIRBYTE_ACTIVE_ROW') }},
   {{ quote('_AIRBYTE_EMITTED_AT') }},
   {{ quote('_AIRBYTE_NESTED_STREAM_WITH_COMPLEX_COLUMNS_RESULTING_INTO_LONG_NAMES_HASHID') }}

@@ -6,7 +6,7 @@
     
   as (
     
-with __dbt__CTE__pos_dedup_cdcx_ab1 as (
+with __dbt__cte__pos_dedup_cdcx_ab1 as (
 
 -- SQL model to parse JSON blob stored in a single column and extract into separated field columns as described by the JSON Schema
 select
@@ -19,7 +19,7 @@ select
     _airbyte_emitted_at
 from "integrationtests".test_normalization._airbyte_raw_pos_dedup_cdcx as table_alias
 -- pos_dedup_cdcx
-),  __dbt__CTE__pos_dedup_cdcx_ab2 as (
+),  __dbt__cte__pos_dedup_cdcx_ab2 as (
 
 -- SQL model to cast each column to its adequate SQL type converted from the JSON schema type
 select
@@ -40,21 +40,17 @@ select
     float
 ) as _ab_cdc_log_pos,
     _airbyte_emitted_at
-from __dbt__CTE__pos_dedup_cdcx_ab1
+from __dbt__cte__pos_dedup_cdcx_ab1
 -- pos_dedup_cdcx
-),  __dbt__CTE__pos_dedup_cdcx_ab3 as (
+),  __dbt__cte__pos_dedup_cdcx_ab3 as (
 
 -- SQL model to build a hash column based on the values of this record
 select
-    md5(cast(
-    
-    coalesce(cast(id as varchar), '') || '-' || coalesce(cast(name as varchar), '') || '-' || coalesce(cast(_ab_cdc_lsn as varchar), '') || '-' || coalesce(cast(_ab_cdc_updated_at as varchar), '') || '-' || coalesce(cast(_ab_cdc_deleted_at as varchar), '') || '-' || coalesce(cast(_ab_cdc_log_pos as varchar), '')
-
- as varchar)) as _airbyte_pos_dedup_cdcx_hashid,
+    md5(cast(coalesce(cast(id as varchar), '') || '-' || coalesce(cast(name as varchar), '') || '-' || coalesce(cast(_ab_cdc_lsn as varchar), '') || '-' || coalesce(cast(_ab_cdc_updated_at as varchar), '') || '-' || coalesce(cast(_ab_cdc_deleted_at as varchar), '') || '-' || coalesce(cast(_ab_cdc_log_pos as varchar), '') as varchar)) as _airbyte_pos_dedup_cdcx_hashid,
     tmp.*
-from __dbt__CTE__pos_dedup_cdcx_ab2 tmp
+from __dbt__cte__pos_dedup_cdcx_ab2 tmp
 -- pos_dedup_cdcx
-),  __dbt__CTE__pos_dedup_cdcx_ab4 as (
+),  __dbt__cte__pos_dedup_cdcx_ab4 as (
 
 -- SQL model to prepare for deduplicating records based on the hash record column
 select
@@ -63,7 +59,7 @@ select
     order by _airbyte_emitted_at asc
   ) as _airbyte_row_num,
   tmp.*
-from __dbt__CTE__pos_dedup_cdcx_ab3 tmp
+from __dbt__cte__pos_dedup_cdcx_ab3 tmp
 -- pos_dedup_cdcx from "integrationtests".test_normalization._airbyte_raw_pos_dedup_cdcx
 )-- SQL model to build a Type 2 Slowly Changing Dimension (SCD) table for each record identified by their primary key
 select
@@ -84,7 +80,7 @@ select
   ) is null and _ab_cdc_deleted_at is null  then 1 else 0 end as _airbyte_active_row,
   _airbyte_emitted_at,
   _airbyte_pos_dedup_cdcx_hashid
-from __dbt__CTE__pos_dedup_cdcx_ab4
+from __dbt__cte__pos_dedup_cdcx_ab4
 -- pos_dedup_cdcx from "integrationtests".test_normalization._airbyte_raw_pos_dedup_cdcx
 where _airbyte_row_num = 1
   );

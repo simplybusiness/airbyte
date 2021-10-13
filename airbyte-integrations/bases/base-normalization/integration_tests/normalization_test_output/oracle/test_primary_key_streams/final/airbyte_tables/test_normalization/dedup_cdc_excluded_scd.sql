@@ -81,11 +81,11 @@ select
   "_AIRBYTE_EMITTED_AT" as "_AIRBYTE_START_AT",
   lag("_AIRBYTE_EMITTED_AT") over (
     partition by id
-    order by "_AIRBYTE_EMITTED_AT" asc nulls first, "_AIRBYTE_EMITTED_AT" desc, "_AIRBYTE_EMITTED_AT" desc
+    order by "_AIRBYTE_EMITTED_AT" asc nulls last, "_AIRBYTE_EMITTED_AT" desc, "_AIRBYTE_EMITTED_AT" desc
   ) as "_AIRBYTE_END_AT",
   case when lag("_AIRBYTE_EMITTED_AT") over (
     partition by id
-    order by "_AIRBYTE_EMITTED_AT" asc nulls first, "_AIRBYTE_EMITTED_AT" desc, "_AIRBYTE_EMITTED_AT" desc, "_AB_CDC_UPDATED_AT" desc
+    order by "_AIRBYTE_EMITTED_AT" asc nulls last, "_AIRBYTE_EMITTED_AT" desc, "_AIRBYTE_EMITTED_AT" desc, "_AB_CDC_UPDATED_AT" desc
   ) is null and "_AB_CDC_DELETED_AT" is null  then 1 else 0 end as "_AIRBYTE_ACTIVE_ROW",
   "_AIRBYTE_EMITTED_AT",
   "_AIRBYTE_DEDUP_CDC_EXCLUDED_HASHID"

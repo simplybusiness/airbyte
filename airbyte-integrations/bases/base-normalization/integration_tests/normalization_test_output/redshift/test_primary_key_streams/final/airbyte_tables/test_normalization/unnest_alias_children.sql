@@ -6,7 +6,7 @@
     
   as (
     
-with __dbt__CTE__unnest_alias_children_ab1 as (
+with __dbt__cte__unnest_alias_children_ab1 as (
 
 -- SQL model to parse JSON blob stored in a single column and extract into separated field columns as described by the JSON Schema
 with numbers as (
@@ -21,7 +21,7 @@ with numbers as (
     select
 
     
-    p0.generated_number * pow(2, 0)
+    p0.generated_number * power(2, 0)
     
     
     + 1
@@ -64,7 +64,7 @@ from "integrationtests".test_normalization."unnest_alias" as table_alias
 left join joined on _airbyte_unnest_alias_hashid = joined._airbyte_hashid
 where children is not null
 -- children at unnest_alias/children
-),  __dbt__CTE__unnest_alias_children_ab2 as (
+),  __dbt__cte__unnest_alias_children_ab2 as (
 
 -- SQL model to cast each column to its adequate SQL type converted from the JSON schema type
 select
@@ -74,19 +74,15 @@ select
 ) as ab_id,
     cast(owner as varchar) as owner,
     _airbyte_emitted_at
-from __dbt__CTE__unnest_alias_children_ab1
+from __dbt__cte__unnest_alias_children_ab1
 -- children at unnest_alias/children
-),  __dbt__CTE__unnest_alias_children_ab3 as (
+),  __dbt__cte__unnest_alias_children_ab3 as (
 
 -- SQL model to build a hash column based on the values of this record
 select
-    md5(cast(
-    
-    coalesce(cast(_airbyte_unnest_alias_hashid as varchar), '') || '-' || coalesce(cast(ab_id as varchar), '') || '-' || coalesce(cast(owner as varchar), '')
-
- as varchar)) as _airbyte_children_hashid,
+    md5(cast(coalesce(cast(_airbyte_unnest_alias_hashid as varchar), '') || '-' || coalesce(cast(ab_id as varchar), '') || '-' || coalesce(cast(owner as varchar), '') as varchar)) as _airbyte_children_hashid,
     tmp.*
-from __dbt__CTE__unnest_alias_children_ab2 tmp
+from __dbt__cte__unnest_alias_children_ab2 tmp
 -- children at unnest_alias/children
 )-- Final base SQL model
 select
@@ -95,6 +91,6 @@ select
     owner,
     _airbyte_emitted_at,
     _airbyte_children_hashid
-from __dbt__CTE__unnest_alias_children_ab3
+from __dbt__cte__unnest_alias_children_ab3
 -- children at unnest_alias/children from "integrationtests".test_normalization."unnest_alias"
   );

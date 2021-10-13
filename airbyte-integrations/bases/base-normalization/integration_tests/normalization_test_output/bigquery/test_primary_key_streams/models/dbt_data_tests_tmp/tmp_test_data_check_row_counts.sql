@@ -29,20 +29,31 @@ union all
 
 union all
 
+    select distinct count(*) as row_count, 8 as expected_count
+    from {{ source('test_normalization', '_airbyte_raw_pos_dedup_cdcx') }}
+union all
+    select distinct count(*) as row_count, 8 as expected_count
+    from {{ ref('pos_dedup_cdcx_scd') }}
+union all
+    select distinct count(*) as row_count, 3 as expected_count
+    from {{ ref('pos_dedup_cdcx') }}
+
+union all
+
     select distinct count(*) as row_count, 2 as expected_count
     from {{ source('test_normalization', '_airbyte_raw_nested_stream_with_complex_columns_resulting_into_long_names') }}
 union all
     select distinct count(*) as row_count, 2 as expected_count
-    from {{ ref('nested_stream_with_co__lting_into_long_names') }}
+    from {{ ref('nested_stream_with_complex_columns_resulting_into_long_names') }}
 union all
     select distinct count(*) as row_count, 2 as expected_count
-    from {{ ref('nested_stream_with_co___long_names_partition') }}
+    from {{ ref('nested_stream_with_complex_columns_resulting_into_long_names_partition') }}
 union all
     select count(distinct currency) as row_count, 1 as expected_count
-    from {{ ref('nested_stream_with_co___names_partition_data') }}
+    from {{ ref('nested_stream_with_complex_columns_resulting_into_long_names_partition_DATA') }}
 -- union all
 --    select count(distinct id) as row_count, 3 as expected_count
---    from {{ ref('nested_stream_with_co__ion_double_array_data') }}
+--    from {{ ref('nested_stream_with_complex_columns_resulting_into_long_names_partition_double_array_data') }}
 )
 select *
 from table_row_counts

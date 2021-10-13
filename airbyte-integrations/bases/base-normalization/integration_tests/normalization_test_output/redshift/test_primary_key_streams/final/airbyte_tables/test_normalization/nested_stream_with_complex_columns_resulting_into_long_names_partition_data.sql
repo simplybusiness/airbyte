@@ -6,7 +6,7 @@
     
   as (
     
-with __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab1 as (
+with __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab1 as (
 
 -- SQL model to parse JSON blob stored in a single column and extract into separated field columns as described by the JSON Schema
 with numbers as (
@@ -21,7 +21,7 @@ with numbers as (
     select
 
     
-    p0.generated_number * pow(2, 0)
+    p0.generated_number * power(2, 0)
     
     
     + 1
@@ -61,26 +61,22 @@ from "integrationtests".test_normalization."nested_stream_with_complex_columns_r
 left join joined on _airbyte_partition_hashid = joined._airbyte_hashid
 where data is not null
 -- data at nested_stream_with_complex_columns_resulting_into_long_names/partition/DATA
-),  __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab2 as (
+),  __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab2 as (
 
 -- SQL model to cast each column to its adequate SQL type converted from the JSON schema type
 select
     _airbyte_partition_hashid,
     cast(currency as varchar) as currency,
     _airbyte_emitted_at
-from __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab1
+from __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab1
 -- data at nested_stream_with_complex_columns_resulting_into_long_names/partition/DATA
-),  __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab3 as (
+),  __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab3 as (
 
 -- SQL model to build a hash column based on the values of this record
 select
-    md5(cast(
-    
-    coalesce(cast(_airbyte_partition_hashid as varchar), '') || '-' || coalesce(cast(currency as varchar), '')
-
- as varchar)) as _airbyte_data_hashid,
+    md5(cast(coalesce(cast(_airbyte_partition_hashid as varchar), '') || '-' || coalesce(cast(currency as varchar), '') as varchar)) as _airbyte_data_hashid,
     tmp.*
-from __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab2 tmp
+from __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab2 tmp
 -- data at nested_stream_with_complex_columns_resulting_into_long_names/partition/DATA
 )-- Final base SQL model
 select
@@ -88,6 +84,6 @@ select
     currency,
     _airbyte_emitted_at,
     _airbyte_data_hashid
-from __dbt__CTE__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab3
+from __dbt__cte__nested_stream_with_complex_columns_resulting_into_long_names_partition_data_ab3
 -- data at nested_stream_with_complex_columns_resulting_into_long_names/partition/DATA from "integrationtests".test_normalization."nested_stream_with_complex_columns_resulting_into_long_names_partition"
   );

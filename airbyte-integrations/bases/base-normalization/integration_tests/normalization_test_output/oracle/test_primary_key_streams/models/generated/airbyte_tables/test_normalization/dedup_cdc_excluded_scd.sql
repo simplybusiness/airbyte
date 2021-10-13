@@ -9,11 +9,11 @@ select
   {{ quote('_AIRBYTE_EMITTED_AT') }} as {{ quote('_AIRBYTE_START_AT') }},
   lag({{ quote('_AIRBYTE_EMITTED_AT') }}) over (
     partition by id
-    order by {{ quote('_AIRBYTE_EMITTED_AT') }} asc nulls first, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
+    order by {{ quote('_AIRBYTE_EMITTED_AT') }} asc nulls last, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc
   ) as {{ quote('_AIRBYTE_END_AT') }},
   case when lag({{ quote('_AIRBYTE_EMITTED_AT') }}) over (
     partition by id
-    order by {{ quote('_AIRBYTE_EMITTED_AT') }} asc nulls first, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AB_CDC_UPDATED_AT') }} desc
+    order by {{ quote('_AIRBYTE_EMITTED_AT') }} asc nulls last, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AIRBYTE_EMITTED_AT') }} desc, {{ quote('_AB_CDC_UPDATED_AT') }} desc
   ) is null and {{ quote('_AB_CDC_DELETED_AT') }} is null  then 1 else 0 end as {{ quote('_AIRBYTE_ACTIVE_ROW') }},
   {{ quote('_AIRBYTE_EMITTED_AT') }},
   {{ quote('_AIRBYTE_DEDUP_CDC_EXCLUDED_HASHID') }}

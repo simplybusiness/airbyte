@@ -61,11 +61,11 @@ select
   "DATE" as "_AIRBYTE_START_AT",
   lag("DATE") over (
     partition by id
-    order by "DATE" asc nulls first, "DATE" desc, "_AIRBYTE_EMITTED_AT" desc
+    order by "DATE" asc nulls last, "DATE" desc, "_AIRBYTE_EMITTED_AT" desc
   ) as "_AIRBYTE_END_AT",
   case when lag("DATE") over (
     partition by id
-    order by "DATE" asc nulls first, "DATE" desc, "_AIRBYTE_EMITTED_AT" desc
+    order by "DATE" asc nulls last, "DATE" desc, "_AIRBYTE_EMITTED_AT" desc
   ) is null  then 1 else 0 end as "_AIRBYTE_ACTIVE_ROW",
   "_AIRBYTE_EMITTED_AT",
   "_AIRBYTE_NESTED_STREAM_WITH_COMPLEX_COLUMNS_RESULTING_INTO_LONG_NAMES_HASHID"
