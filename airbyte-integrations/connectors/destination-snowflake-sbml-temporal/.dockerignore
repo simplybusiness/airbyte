@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!main.py
+!destination_snowflake_sbml_temporal
+!setup.py
+!config.json
+!catalog.json
+!.secrets.json
+!messagesX.jsonl
